@@ -83,7 +83,7 @@ function twitter()
 		  access_token_secret: twitterAccessTokenSec
 		});
 
-		var params = {screen_name: '@realDonaldTrump'};
+		var params = {screen_name: '@elonmusk'};
 		client.get('statuses/user_timeline', params, function(error, tweets, response) {
 		  if (!error) 
 		  	{
@@ -96,6 +96,8 @@ function twitter()
 		    		console.log(" Tweet created: " +tweets[k].created_at);
 		    		console.log("*******************************************************")
 		    		console.log("                                                        ")
+		    		writeFile(" Tweet: " +tweets[k].text);
+		    		writeFile(" Tweet created: " +tweets[k].created_at);
 			  	}
 		  	}
 		});
@@ -110,11 +112,19 @@ function spotifyy(songName)
 		        console.log('Error occurred: ' + err);
 		        return;
 		    }
-		    console.log(" Artist : " + data.tracks.items[0].artists[0].name); 
-		    console.log(" Song's name : " + data.tracks.items[0].name); 
-		    console.log(" Preview link : " + data.tracks.items[0].preview_url); 		  
-		    console.log(" Album : " + data.tracks.items[0].album.name); 
- 
+
+		    var artistInfo = ("Artist : " + data.tracks.items[0].artists[0].name);
+		    var nameInfo = (" Song's name : " + data.tracks.items[0].name);
+		    var linkInfo = (" Preview link : " + data.tracks.items[0].preview_url);
+		    var albumInfo = (" Album : " + data.tracks.items[0].album.name);
+			var songDataPackage = [artistInfo, nameInfo,linkInfo,albumInfo];
+
+		    for (var m =0; m < songDataPackage.length; m++) 
+				{
+					console.log(songDataPackage[m] +'\r\n' );
+					writeFile(songDataPackage[m]);
+				}
+
 		});
 	}
 
@@ -129,17 +139,27 @@ function movie(mName)
 
 		if (!error && response.statusCode ===200)
 
-			{
-				//console.log(JSON.parse(body));
-				console.log("Title of the movie: "+ JSON.parse(body).Title);
-				console.log("The movie's release Year is : "+ JSON.parse(body).Year);
-				console.log("The movie's IMDB rating is : "+ JSON.parse(body).imdbRating);
-				console.log("The movie was produced in : "+ JSON.parse(body).Country);
-				console.log("The language of the movie is : "+ JSON.parse(body).Language);
-				console.log("The plot of the movie is : "+ JSON.parse(body).Plot);
-				console.log("Actors of the movie are : "+ JSON.parse(body).Actors);
-				console.log("Rotten tomatoes Rating : "+ JSON.parse(body).tomatoRating);
-				console.log("Rotten tomatoes URL: "+ JSON.parse(body).tomatoURL);
+			{	
+				
+				
+				var titleInfo =("Title of the movie: "+ JSON.parse(body).Title);
+				var yearInfo =("The movie's release Year is : "+ JSON.parse(body).Year);
+				var ratingInfo =("The movie's IMDB rating is : "+ JSON.parse(body).imdbRating);
+				var produceInfo =("The movie was produced in : "+ JSON.parse(body).Country);
+				var langInfo =("The language of the movie is : "+ JSON.parse(body).Language);
+				var plotInfo =("The plot of the movie is : "+ JSON.parse(body).Plot);
+				var castInfo =("Actors of the movie are : "+ JSON.parse(body).Actors);
+				var tomatoratingInfo =("Rotten tomatoes Rating : "+ JSON.parse(body).tomatoRating);
+				var tomatoURLInfo =("Rotten tomatoes URL: "+ JSON.parse(body).tomatoURL);
+
+				var movieDataPackage = [titleInfo,yearInfo,ratingInfo,produceInfo,langInfo,plotInfo,
+									castInfo,tomatoratingInfo,tomatoURLInfo];
+
+				for (var z=0; z < movieDataPackage.length; z++) 
+				{
+					console.log(movieDataPackage[z] +'\r\n' );
+					writeFile(movieDataPackage[z]);
+				}
 
 			}
 		});
@@ -162,7 +182,6 @@ function dowhatitsays()
 
 			console.log(datainit);
 			console.log(datasecond);
-			console.log(data);
 
 			if (datainit === "spotify-this-song")
 			{
@@ -182,3 +201,14 @@ function dowhatitsays()
 	}
 
 
+function writeFile(logdata) {
+
+	logdata = logdata + '\r\n';
+
+	fs = require('fs');
+	fs.appendFile('log.txt', logdata, function (err) {
+
+  if (err) return console.log(err);
+  
+});
+} 
